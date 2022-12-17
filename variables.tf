@@ -35,15 +35,15 @@ variable "department" {
 
 variable "wap_dv_name" {
   type = string
-  default = "wap_dv"
+  default = "wap-dv"
 }
 
 variable "wap_qa_name" {
   type = string
-  default = "wap_qa"
+  default = "wap-qa"
 }
 
 variable "wap_pd_name" {
   type = string
-  default = "wap_pd"
+  default = "wap-pd"
 }
