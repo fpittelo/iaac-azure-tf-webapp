@@ -1,6 +1,6 @@
 variable "wap_rg_name" {
   type = string
-  default = "iaac-azure-tf-webapp"
+  default = "wap-rg"
 }
 
 variable "wap_rg_location" {
@@ -10,7 +10,7 @@ variable "wap_rg_location" {
 
 variable "wap_sp_name" {
   type = string
-  default = "wap_sp_webapp"
+  default = "wap-sp"
 }
 
 variable "wap_sp_sku_name_F1" {
