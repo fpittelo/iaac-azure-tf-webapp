@@ -12,3 +12,24 @@ variable "wap_sap_name" {
   type = string
   default = "wap_sap_name"
 }
+
+variable "wap_sp_sku_name_P1v2" {
+  type = string
+  default = "P1v2"
+}
+
+variable "wap_sp_sku_os_linux" {
+  type = string
+  default = "Linux"
+}
+
+variable "owner" {
+  type = string
+  default = "Fred"
+}
+
+variable "department" {
+  type = string
+  default = "IT"
+}
+
