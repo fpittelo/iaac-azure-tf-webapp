@@ -10,15 +10,12 @@ resource   "azurerm_resource_group"   "rg"   {
   }
 }
 
-resource "azurerm_app_service_plan" "wap_sp" {
+resource "azurerm_service_plan" "wap_sp" {
   name                = var.wap_sap_name
   location            = var.wap_rg_location
   resource_group_name = var.wap_rg_name
-
-  sku {
-    tier = "Standard"
-    size = "S1"
-  }
+  sku_name            = "P1v2"
+  os_type             = "Linux"
 
   tags = {
     owner       = "fred"
