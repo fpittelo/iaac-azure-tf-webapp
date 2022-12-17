@@ -8,14 +8,14 @@ variable "wap_rg_location" {
   default = "Switzerland North"
 }
 
-variable "wap_sap_name" {
+variable "wap_sp_name" {
   type = string
-  default = "wap_sap_name"
+  default = "wap_sp_name"
 }
 
-variable "wap_sp_sku_name_P1v2" {
+variable "wap_sp_sku_name_F1" {
   type = string
-  default = "P1v2"
+  default = "B1"
 }
 
 variable "wap_sp_sku_os_linux" {
