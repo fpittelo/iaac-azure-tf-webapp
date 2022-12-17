@@ -47,3 +47,18 @@ variable "wap_pd_name" {
   type = string
   default = "wap-pd"
 }
+
+variable "wap_status_dv" {
+  type = string
+  default = "development"
+}
+
+variable "wap_status_qa" {
+  type = string
+  default = "quality"
+}
+
+variable "wap_status_pd" {
+  type = string
+  default = "production"
+}
