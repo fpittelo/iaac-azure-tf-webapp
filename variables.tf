@@ -33,3 +33,17 @@ variable "department" {
   default = "IT"
 }
 
+variable "wap_dv_name" {
+  type = string
+  default = "wap_dv"
+}
+
+variable "wap_qa_name" {
+  type = string
+  default = "wap_qa"
+}
+
+variable "wap_pd_name" {
+  type = string
+  default = "wap_pd"
+}
