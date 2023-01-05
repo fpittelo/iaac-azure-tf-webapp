@@ -1,3 +1,28 @@
+
+#### variable for subscription_id ####
+variable "subscription_id" {
+  type = string
+  default = "a6f24a81-7804-44a9-b074-25a9781afd24"
+}
+
+#### variable for client_id ####
+variable "client_id" {
+  type = string
+  default = "60ab9702-ec7c-4c22-a97b-99ca2dd561b9"
+}
+
+#### variable for tenant_id ####
+variable "tenant_id" {
+  type = string
+  default = "4c8896b7-52b2-4cb4-9533-1dc0c937e1ed"
+}
+
+#### variable for client_secret ####
+variable "client_secret" {
+  type = string
+  default = "tdx8Q~riROFq4toqpos5NdXSi_O8ItR6aqEkFbpB"
+}
+
 variable "wap_rg_name" {
   type = string
   default = "wap-rg"
