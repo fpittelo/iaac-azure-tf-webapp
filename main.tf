@@ -1,5 +1,5 @@
 
-#Create ressource group for iaac-azure-tf-wapp
+#Create ressource group for iaac-azure-tf-wapp ##
 resource   "azurerm_resource_group"   "rg"   { 
   name                =   var.wap_rg_name 
   location            =   var.wap_rg_location
