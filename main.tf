@@ -1,12 +1,12 @@
 
 #Create ressource group for iaac-azure-tf-wapp ####
-resource   "azurerm_resource_group"   "rg"   { 
-  name                =   var.wap_rg_name 
-  location            =   var.wap_rg_location
+resource "azurerm_resource_group" "rg" {
+  name     = var.wap_rg_name
+  location = var.wap_rg_location
 
   tags = {
-    owner       = var.owner
-    dept        = var.department
+    owner = var.owner
+    dept  = var.department
   }
 }
 
@@ -19,10 +19,9 @@ resource "azurerm_service_plan" "wap_sp_name" {
   depends_on          = [azurerm_resource_group.rg]
 
   tags = {
-    owner       = var.owner
-    dept        = var.department
+    owner = var.owner
+    dept  = var.department
   }
-
 }
 
 resource "azurerm_linux_web_app" "wap_dv_name" {
@@ -33,9 +32,9 @@ resource "azurerm_linux_web_app" "wap_dv_name" {
   depends_on          = [azurerm_resource_group.rg, azurerm_service_plan.wap_sp_name]
 
   tags = {
-    owner       = var.owner
-    dept        = var.department
-    status      = var.wap_status_dv
+    owner  = var.owner
+    dept   = var.department
+    status = var.wap_status_dv
   }
 
   site_config {}
@@ -49,9 +48,9 @@ resource "azurerm_linux_web_app" "wap_qa_name" {
   depends_on          = [azurerm_resource_group.rg, azurerm_service_plan.wap_sp_name]
 
   tags = {
-    owner       = var.owner
-    dept        = var.department
-    status      = var.wap_status_qa
+    owner  = var.owner
+    dept   = var.department
+    status = var.wap_status_qa
   }
 
   site_config {}
@@ -65,9 +64,9 @@ resource "azurerm_linux_web_app" "wap_pd_name" {
   depends_on          = [azurerm_resource_group.rg, azurerm_service_plan.wap_sp_name]
 
   tags = {
-    owner       = var.owner
-    dept        = var.department
-    status      = var.wap_status_pd
+    owner  = var.owner
+    dept   = var.department
+    status = var.wap_status_pd
   }
 
   site_config {}
