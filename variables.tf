@@ -20,7 +20,7 @@ variable "tenant_id" {
 #### variable for client_secret ####
 variable "client_secret" {
   type = string
-  default = "tdx8Q~riROFq4toqpos5NdXSi_O8ItR6aqEkFbpB"
+  default = "J1X8Q~CafN2rr5oy0xW5FiB1GKY~gmk9uQhCectv"
 }
 
 variable "wap_rg_name" {
