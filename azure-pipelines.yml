@@ -12,12 +12,32 @@ pool:
 stages:
 - stage: Validate
   displayName: Validate
+
   jobs:
   - job: validate
     pool:
       vmImage: ubuntu-latest
+
     steps:
     - task: TerraformInstaller@0
       displayName: Install Terraform
       inputs:
         terraformVersion: 'latest'
+    
+    - task: TerraformTaskV3@3
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: 'Terraform-devops-pipeline'
+        backendAzureRmResourceGroupName: 'FRED'
+        backendAzureRmStorageAccountName: 'iaaclabs'
+        backendAzureRmContainerName: 'iaacazuretfwebapp'
+        backendAzureRmKey: 'terraform.tfstate'
+        
+    # Validate
+    - task: TerraformTaskV3@3
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        
+    
