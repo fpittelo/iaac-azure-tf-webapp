@@ -1,31 +1,53 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
 trigger:
   branches:
     include:
     - refs/heads/feature
+
 resources:
   repositories:
   - repository: self
     type: git
     ref: refs/heads/feature
+
 jobs:
-- job: Job_1
+- job: terraform-build
   displayName: terraform-build
   timeoutInMinutes: 10
   pool:
     vmImage: windows-2019
+
   steps:
   - checkout: self
     clean: true
     fetchTags: false
+
   - task: CopyFiles@2
-    displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+    displayName: 'cp to stage directory'
     inputs:
       TargetFolder: $(build.artifactstagingdirectory)
       CleanTargetFolder: true
       OverWrite: true
+
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: tf-webapp'
     inputs:
       PathtoPublish: artifacts
       ArtifactName: tf-webapp
 ...
+variables:
+    - key: "subscription_id"
+      value: "a6f24a81-7804-44a9-b074-25a9781afd24"
+      type: "VAR"
+    
+    - key: "tenant_id"
+      value: "4c8896b7-52b2-4cb4-9533-1dc0c937e1ed"
+      type: "VAR"
+    
+    - key: "client_id"
+      value: "60ab9702-ec7c-4c22-a97b-99ca2dd561b9"
+      type: "VAR"
