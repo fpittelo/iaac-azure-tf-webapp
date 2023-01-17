@@ -1,0 +1,44 @@
+##### Destroy Pipeline ######################
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  rg_group: 'azure-tf-scaleset'
+  sa_name: 'iaaclabs'
+  cont_name: 'iaacazuretfscaleset'
+  storage_key: 'terraform.tfstate'
+
+stages:
+  - stage: tfdestroy
+    jobs:
+      - job: destroy
+        steps:
+          - task: TerraformInstaller@0
+            displayName: deptfinstall
+            inputs:
+              terraformVersion: 'latest'
+          - task: TerraformTaskV3@3
+            displayName: deptfinit
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'Pay-As-You-Go(a6f24a81-7804-44a9-b074-25a9781afd24)'
+              backendAzureRmResourceGroupName: 'FRED'
+              backendAzureRmStorageAccountName: 'iaaclabs'
+              backendAzureRmContainerName: 'iaacazuretfscaleset'
+              backendAzureRmKey: 'terraform.tfstate'
+          - task: TerraformTaskV3@3
+            displayName: deptfplan
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: 'Pay-As-You-Go(a6f24a81-7804-44a9-b074-25a9781afd24)'
+          - task: TerraformTaskV3@3
+            displayName: destroy
+            inputs:
+              provider: 'azurerm'
+              command: 'destroy'
+              environmentServiceNameAzureRM: 'Pay-As-You-Go(a6f24a81-7804-44a9-b074-25a9781afd24)'

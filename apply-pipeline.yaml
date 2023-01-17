@@ -1,0 +1,70 @@
+##### Apply Pipeline #######
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  rg_group: 'iaac-azure-tf-vm'
+  sa_name: 'iaaclabs'
+  cont_name: 'iaacazuretfvm'
+  storage_key: 'terraform.tfstate'
+
+stages:
+  - stage: tfvalidate
+    jobs:
+      - job: validate
+        continueOnError: false
+        steps:
+        - task: TerraformInstaller@0
+          displayName: tfinstall
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTaskV3@3
+          displayName: tfinit
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            backendServiceArm: 'Pay-As-You-Go(a6f24a81-7804-44a9-b074-25a9781afd24)'
+            backendAzureRmResourceGroupName: 'FRED'
+            backendAzureRmStorageAccountName: 'iaaclabs'
+            backendAzureRmContainerName: 'iaacazuretfvm'
+            backendAzureRmKey: 'terraform.tfstate'
+        - task: TerraformTaskV3@3
+          displayName: validate
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+  - stage: tfdeploy
+    condition: succeeded('tfvalidate')
+    dependsOn: tfvalidate
+    jobs:
+      - job: apply
+        steps:
+          - task: TerraformInstaller@0
+            displayName: deptfinstall
+            inputs:
+              terraformVersion: 'latest'
+          - task: TerraformTaskV3@3
+            displayName: deptfinit
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'Pay-As-You-Go(a6f24a81-7804-44a9-b074-25a9781afd24)'
+              backendAzureRmResourceGroupName: 'FRED'
+              backendAzureRmStorageAccountName: 'iaaclabs'
+              backendAzureRmContainerName: 'iaacazuretfvm'
+              backendAzureRmKey: 'terraform.tfstate'
+          - task: TerraformTaskV3@3
+            displayName: deptfplan
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: 'Pay-As-You-Go(a6f24a81-7804-44a9-b074-25a9781afd24)'
+          - task: TerraformTaskV3@3
+            displayName: depapply
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              environmentServiceNameAzureRM: 'Pay-As-You-Go(a6f24a81-7804-44a9-b074-25a9781afd24)'
