@@ -25,7 +25,7 @@ variable "client_secret" {
 
 variable "wap_rg_name" {
   type    = string
-  default = "wap-rg"
+  default = "iaac-azure-tf-webapp"
 }
 
 variable "wap_rg_location" {
