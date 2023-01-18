@@ -12,7 +12,7 @@ variables:
   storage_key: 'terraform.tfstate'
 
 stages:
-  - stage: tfdestroy
+  - stage: destroy
     jobs:
       - job: destroy
         steps:
@@ -31,7 +31,7 @@ stages:
               backendAzureRmContainerName: 'iaacazuretfwebapp'
               backendAzureRmKey: 'terraform.tfstate'
           - task: TerraformTaskV3@3
-            displayName: deptfplan
+            displayName: fplan
             inputs:
               provider: 'azurerm'
               command: 'plan'

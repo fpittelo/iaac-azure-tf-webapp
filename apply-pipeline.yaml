@@ -12,17 +12,17 @@ variables:
   storage_key: 'terraform.tfstate'
 
 stages:
-  - stage: tfvalidate
+  - stage: validate
     jobs:
       - job: validate
         continueOnError: false
         steps:
         - task: TerraformInstaller@0
-          displayName: tfinstall
+          displayName: install
           inputs:
             terraformVersion: 'latest'
         - task: TerraformTaskV3@3
-          displayName: tfinit
+          displayName: init
           inputs:
             provider: 'azurerm'
             command: 'init'
@@ -36,9 +36,9 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'validate'
-  - stage: tfdeploy
+  - stage: deploy
     condition: succeeded('tfvalidate')
-    dependsOn: tfvalidate
+    dependsOn: validate
     jobs:
       - job: apply
         steps:
@@ -47,7 +47,7 @@ stages:
             inputs:
               terraformVersion: 'latest'
           - task: TerraformTaskV3@3
-            displayName: deptfinit
+            displayName: init
             inputs:
               provider: 'azurerm'
               command: 'init'
@@ -57,7 +57,7 @@ stages:
               backendAzureRmContainerName: 'iaacazuretfwebapp'
               backendAzureRmKey: 'terraform.tfstate'
           - task: TerraformTaskV3@3
-            displayName: deptfplan
+            displayName: plan
             inputs:
               provider: 'azurerm'
               command: 'plan'
