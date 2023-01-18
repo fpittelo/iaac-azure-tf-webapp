@@ -25,7 +25,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'init'
-              backendServiceArm: 'Pay-As-You-Go(a6f24a81-7804-44a9-b074-25a9781afd24)'
+              backendServiceArm: 'Terraform'
               backendAzureRmResourceGroupName: 'FRED'
               backendAzureRmStorageAccountName: 'iaaclabs'
               backendAzureRmContainerName: 'iaacazuretfwebapp'
@@ -35,10 +35,10 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'plan'
-              environmentServiceNameAzureRM: 'Pay-As-You-Go(a6f24a81-7804-44a9-b074-25a9781afd24)'
+              environmentServiceNameAzureRM: 'Terraform'
           - task: TerraformTaskV3@3
             displayName: destroy
             inputs:
               provider: 'azurerm'
               command: 'destroy'
-              environmentServiceNameAzureRM: 'Pay-As-You-Go(a6f24a81-7804-44a9-b074-25a9781afd24)'
+              environmentServiceNameAzureRM: 'Terraform'
