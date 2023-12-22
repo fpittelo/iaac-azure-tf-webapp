@@ -1,0 +1,44 @@
+##### Destroy Pipeline ######################
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  rg_group: 'LABS'
+  sa_name: 'iaaclabs'
+  cont_name: 'iaacazuretfwebapp'
+  storage_key: 'terraform.tfstate'
+
+stages:
+  - stage: destroy
+    jobs:
+      - job: destroy
+        steps:
+          - task: TerraformInstaller@0
+            displayName: install
+            inputs:
+              terraformVersion: 'latest'
+          - task: TerraformTaskV3@3
+            displayName: init
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'terraform'
+              backendAzureRmResourceGroupName: 'FRED'
+              backendAzureRmStorageAccountName: 'iaaclabs'
+              backendAzureRmContainerName: 'iaacazuretfwebapp'
+              backendAzureRmKey: 'terraform.tfstate'
+          - task: TerraformTaskV3@3
+            displayName: plan
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: 'terraform'
+          - task: TerraformTaskV3@3
+            displayName: destroy
+            inputs:
+              provider: 'azurerm'
+              command: 'destroy'
+              environmentServiceNameAzureRM: 'terraform'
