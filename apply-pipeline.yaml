@@ -1,0 +1,71 @@
+##### Apply Pipeline ######
+
+trigger:
+  - dev
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+
+  rg_group: 'LABS'
+  sa_name: 'iaaclabs'
+  cont_name: 'iaacazuretfwebapp'
+  storage_key: 'terraform.tfstate'
+
+stages:
+  - stage: validate
+    jobs:
+      - job: validate
+        continueOnError: false
+        steps:
+        - task: TerraformInstaller@0
+          displayName: install
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTaskV3@3
+          displayName: init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            backendServiceArm: 'terraform'
+            backendAzureRmResourceGroupName: 'FRED'
+            backendAzureRmStorageAccountName: 'iaaclabs'
+            backendAzureRmContainerName: 'iaacazuretfwebapp'
+            backendAzureRmKey: 'terraform.tfstate'
+        - task: TerraformTaskV3@3
+          displayName: validate
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+  - stage: deploy
+    condition: succeeded('validate')
+    dependsOn: validate
+    jobs:
+      - job: apply
+        steps:
+          - task: TerraformInstaller@0
+            displayName: install
+            inputs:
+              terraformVersion: 'latest'
+          - task: TerraformTaskV3@3
+            displayName: init
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'terraform'
+              backendAzureRmResourceGroupName: 'FRED'
+              backendAzureRmStorageAccountName: 'iaaclabs'
+              backendAzureRmContainerName: 'iaacazuretfwebapp'
+              backendAzureRmKey: 'terraform.tfstate'
+          - task: TerraformTaskV3@3
+            displayName: plan
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: 'terraform'
+          - task: TerraformTaskV3@3
+            displayName: apply
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              environmentServiceNameAzureRM: 'terraform'
