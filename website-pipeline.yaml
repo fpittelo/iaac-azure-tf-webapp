@@ -9,6 +9,15 @@ trigger: none
 stages:
   - stage: deploy
     jobs:
+      - job: archive
+        steps:
+        - task: ArchiveFiles@2
+          inputs:
+            rootFolderOrFile: '$(Build.BinariesDirectory)'
+            includeRootFolder: true
+            archiveType: 'zip'
+            archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+            replaceExistingArchive: true
       - job: deploy
         continueOnError: false
         steps:
