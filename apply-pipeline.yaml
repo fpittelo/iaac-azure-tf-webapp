@@ -1,7 +1,7 @@
 ##### Apply Pipeline ######
 
-trigger:
-  - dev
+trigger: none
+# - dev
 pool:
   vmImage: ubuntu-latest
 
