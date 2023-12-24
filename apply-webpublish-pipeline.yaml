@@ -76,7 +76,7 @@ stages:
     - job: webpublish
       steps:
         - checkout: self
-        - tasks: AzureRmWebAppDeployment@4
+        - task: AzureRmWebAppDeployment@4
           inputs:
             displayName: webpublish
             ConnectionType: 'AzureRM'
