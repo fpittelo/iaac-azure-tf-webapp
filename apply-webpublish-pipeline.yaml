@@ -76,6 +76,11 @@ stages:
     - job: webpublish
       steps:
         - checkout: self
+
+        # Add a step to zip your PHP files
+        - script: zip -r app.zip .
+          displayName: 'Package PHP Application'
+
         - task: AzureRmWebAppDeployment@4
           inputs:
             displayName: webpublish
@@ -83,5 +88,5 @@ stages:
             azureSubscription: 'Terraform'  # Define your Azure subscription service connection
             appType: 'webAppLinux'  # Use 'webAppLinux' or 'webApp' depending on your app type
             WebAppName: 'wap-dev'  # The name of the Azure Web App
-            packageForLinux: '$(System.DefaultWorkingDirectory)/**'  # Path to your PHP code or package
+            packageForLinux: '$(System.DefaultWorkingDirectory)/app.zip'  # Path to your PHP code or package
             # Additional parameters as needed
