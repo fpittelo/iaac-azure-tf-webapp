@@ -71,7 +71,7 @@ stages:
               environmentServiceNameAzureRM: 'terraform'
   - stage: webpublish
     condition: succeeded('deploy')
-    dependsOn: validate
+    dependsOn: deploy
     jobs:
     - job: webpublish
       steps:
