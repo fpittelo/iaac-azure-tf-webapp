@@ -69,3 +69,11 @@ stages:
               provider: 'azurerm'
               command: 'apply'
               environmentServiceNameAzureRM: 'terraform'
+  - stage: webpublish
+    condition: succeeded('deploy')
+    dependsOn: validate
+    jobs:
+    - job: webpublish
+      steps:
+      - script:
+        displayName: webpublish
