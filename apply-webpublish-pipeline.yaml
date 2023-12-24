@@ -75,5 +75,12 @@ stages:
     jobs:
     - job: webpublish
       steps:
-      - script:
-        displayName: webpublish
+        - checkout: self
+        - tasks: AzureRmWebAppDeployment@4
+          displayName: webpublish
+          ConnectionType: 'AzureRM'
+          azureSubscription: 'YourAzureSubscriptionServiceConnection'  # Define your Azure subscription service connection
+          appType: 'webAppLinux'  # Use 'webAppLinux' or 'webApp' depending on your app type
+          WebAppName: 'fpitwebapp'  # The name of the Azure Web App
+          packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'  # Path to your PHP code or package
+          # Additional parameters as needed
