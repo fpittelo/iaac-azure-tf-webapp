@@ -77,7 +77,7 @@ stages:
       steps:
         - checkout: github://fpittelo/website@dev  # Specify your GitHub repo and branch
           displayName: 'Checkout dev branch'
-          name: github://fpittelo/website
+          name: fpittelo
 
         # Add a step to zip your PHP files
         - script: zip -r app.zip .
