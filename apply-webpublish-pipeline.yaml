@@ -75,9 +75,7 @@ stages:
     jobs:
     - job: webpublish
       steps:
-        - checkout: github://fpittelo/website@dev  # Specify your GitHub repo and branch
-          displayName: 'Checkout dev branch'
-          name: fpittelo
+        - checkout: self
 
         # Add a step to zip your PHP files
         - script: zip -r app.zip .
