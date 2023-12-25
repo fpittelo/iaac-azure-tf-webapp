@@ -5,6 +5,7 @@ resource   "azurerm_resource_group"   "rg"   {
   location            =   var.wap_rg_location
 
   tags = {
+    project     = var.project
     owner       = var.owner
     dept        = var.department
   }
@@ -19,6 +20,7 @@ resource "azurerm_service_plan" "wap_sp_name" {
   depends_on          = [azurerm_resource_group.rg]
 
   tags = {
+    project     = var.project
     owner       = var.owner
     dept        = var.department
   }
@@ -33,9 +35,10 @@ resource "azurerm_linux_web_app" "wap_dv_name" {
   depends_on          = [azurerm_resource_group.rg, azurerm_service_plan.wap_sp_name]
 
   tags = {
+    project     = var.project
     owner       = var.owner
     dept        = var.department
-    status      = var.wap_status_dv
+    status      = var.wap_dv_name
   }
 
   site_config {}
@@ -49,6 +52,7 @@ resource "azurerm_linux_web_app" "wap_qa_name" {
   depends_on          = [azurerm_resource_group.rg, azurerm_service_plan.wap_sp_name]
 
   tags = {
+    project     = var.project
     owner       = var.owner
     dept        = var.department
     status      = var.wap_status_qa
@@ -65,6 +69,7 @@ resource "azurerm_linux_web_app" "wap_pd_name" {
   depends_on          = [azurerm_resource_group.rg, azurerm_service_plan.wap_sp_name]
 
   tags = {
+    project     = var.project
     owner       = var.owner
     dept        = var.department
     status      = var.wap_status_pd
