@@ -9,7 +9,7 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name  = "FRED"
+    resource_group_name  = "LABS"
     storage_account_name = "iaaclabs"
     container_name       = "iaacazuredatamgt"
     key                  = "terraform.tfstate"
