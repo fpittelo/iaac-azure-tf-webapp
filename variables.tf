@@ -48,9 +48,9 @@ variable "wap_sp_name" {
   default = "wap-sp"
 }
 
-variable "wap_sp_sku_name_F1" {
+variable "wap_sp_sku" {
   type = string
-  default = "B1"
+  default = "S1"
 }
 
 variable "wap_sp_sku_os_linux" {
