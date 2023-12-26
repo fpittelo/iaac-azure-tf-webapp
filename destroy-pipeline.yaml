@@ -26,7 +26,7 @@ stages:
               provider: 'azurerm'
               command: 'init'
               backendServiceArm: 'terraform'
-              backendAzureRmResourceGroupName: 'FRED'
+              backendAzureRmResourceGroupName: 'LABS'
               backendAzureRmStorageAccountName: 'iaaclabs'
               backendAzureRmContainerName: 'iaacazuretfwebapp'
               backendAzureRmKey: 'terraform.tfstate'

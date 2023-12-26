@@ -1,15 +1,15 @@
 
 #Create ressource group for iaac-azure-tf-wapp
-resource   "azurerm_resource_group"   "rg"   { 
-  name                =   var.wap_rg_name 
-  location            =   var.wap_rg_location
-
-  tags = {
-    project     = var.project
-    owner       = var.owner
-    dept        = var.department
-  }
-}
+#resource   "azurerm_resource_group"   "rg"   { 
+# name                =   var.wap_rg_name 
+# location            =   var.wap_rg_location
+#
+# tags = {
+#   project     = var.project
+#   owner       = var.owner
+#   dept        = var.department
+# }
+#}
 
 resource "azurerm_service_plan" "wap_sp_name" {
   name                = var.wap_sp_name
