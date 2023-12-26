@@ -15,7 +15,7 @@ resource "azurerm_service_plan" "wap_sp_name" {
   name                = var.wap_sp_name
   location            = var.wap_rg_location
   resource_group_name = var.wap_rg_name
-  sku_name            = var.wap_sp_sku_name_F1
+  sku_name            = var.wap_sp_sku
   os_type             = var.wap_sp_sku_os_linux
 
   tags = {
