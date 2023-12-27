@@ -69,28 +69,28 @@ stages:
               provider: 'azurerm'
               command: 'apply'
               environmentServiceNameAzureRM: 'terraform'
-  - stage: webpublish
-    condition: succeeded('deploy')
-    dependsOn: deploy
-    jobs:
-    - job: webpublish
-      steps:
-        
-        - script: sleep 60  # Delay for resource availability
-          displayName: 'Delay for resource check'
-        
-        - checkout: self
-
-        # Add a step to zip your PHP files
-        - script: zip -r app.zip .
-          displayName: 'Package PHP Application'
-
-        - task: AzureRmWebAppDeployment@4
-          inputs:
-            displayName: webpublish
-            ConnectionType: 'AzureRM'
-            azureSubscription: 'Terraform'  # Define your Azure subscription service connection
-            appType: 'webAppLinux'  # Use 'webAppLinux' or 'webApp' depending on your app type
-            WebAppName: 'wap-dv'  # The name of the Azure Web App
-            packageForLinux: '$(System.DefaultWorkingDirectory)/app.zip'  # Path to your PHP code or package
-            # Additional parameters as needed
+##- stage: webpublish
+#   condition: succeeded('deploy')
+#   dependsOn: deploy
+#   jobs:
+#   - job: webpublish
+#     steps:
+#       
+#       - script: sleep 60  # Delay for resource availability
+#         displayName: 'Delay for resource check'
+#       
+#       - checkout: self
+#
+#       # Add a step to zip your PHP files
+#       - script: zip -r app.zip .
+#         displayName: 'Package PHP Application'
+#
+#       - task: AzureRmWebAppDeployment@4
+#         inputs:
+#           displayName: webpublish
+#           ConnectionType: 'AzureRM'
+#           azureSubscription: 'Terraform'  # Define your Azure subscription service connection
+#           appType: 'webAppLinux'  # Use 'webAppLinux' or 'webApp' depending on your app type
+#           WebAppName: 'wap-dv'  # The name of the Azure Web App
+#           packageForLinux: '$(System.DefaultWorkingDirectory)/app.zip'  # Path to your PHP code or package
+#           # Additional parameters as needed
