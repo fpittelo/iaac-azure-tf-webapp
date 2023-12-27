@@ -39,7 +39,12 @@ resource "azurerm_linux_web_app" "wap_dv_name" {
     status      = var.wap_status_dv
   }
 
-  site_config {}
+  site_config {
+    default_documents = ["index.html","index.htm"]
+    application_stack {
+      php_version = "8.2"
+    }
+  }
 }
 
 resource "azurerm_linux_web_app_slot" "dev" {
@@ -47,6 +52,7 @@ resource "azurerm_linux_web_app_slot" "dev" {
   app_service_id  = azurerm_linux_web_app.wap_dv_name.id
 
   site_config {
+    default_documents = ["index.html","index.htm"]
     application_stack {
       php_version = "8.2"
     }
