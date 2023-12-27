@@ -59,6 +59,12 @@ resource "azurerm_linux_web_app_slot" "dev" {
   }
 }
 
+resource "azurerm_app_service_source_control_slot" "wap_dv_source_control" {
+  slot_id             = azurerm_linux_web_app_slot.dev.id
+  repo_url            = "https://github.com/fpittelo/website"
+  branch              = "dev"
+}
+
 resource "azurerm_linux_web_app_slot" "qa" {
   name            = "qa"
   app_service_id  = azurerm_linux_web_app.wap_dv_name.id
