@@ -44,7 +44,7 @@ resource "azurerm_linux_web_app" "wap_dv_name" {
 
 resource "azurerm_linux_web_app_slot" "dev" {
   name            = "dev"
-  app_service_id  = azurerm_linux_web_app.wap_dv_name
+  app_service_id  = azurerm_linux_web_app_slot.dev.id
 
   site_config {
     application_stack {
