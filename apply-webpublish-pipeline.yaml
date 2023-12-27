@@ -76,7 +76,7 @@ stages:
     - job: webpublish
       steps:
         
-        - script: sleep 90  # Delay for resource availability
+        - script: sleep 60  # Delay for resource availability
           displayName: 'Delay for resource check'
         
         - checkout: self
