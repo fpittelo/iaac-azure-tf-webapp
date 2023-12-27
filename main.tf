@@ -59,6 +59,31 @@ resource "azurerm_linux_web_app_slot" "dev" {
   }
 }
 
+resource "azurerm_linux_web_app_slot" "qa" {
+  name            = "qa"
+  app_service_id  = azurerm_linux_web_app.wap_dv_name.id
+
+  site_config {
+    default_documents = ["index.html","index.htm"]
+    application_stack {
+      php_version = "8.2"
+    }
+  }
+}
+
+resource "azurerm_linux_web_app_slot" "prod" {
+  name            = "prod"
+  app_service_id  = azurerm_linux_web_app.wap_dv_name.id
+
+  site_config {
+    default_documents = ["index.html","index.htm"]
+    application_stack {
+      php_version = "8.2"
+    }
+  }
+}
+
+
 #resource "azurerm_app_service_source_control_slot" "wap_dv_source_control" {
 # slot_id             = azurerm_linux_web_app_slot.dev.id
 # repo_url            = "https://github.com/fpittelo/website"
@@ -79,7 +104,12 @@ resource "azurerm_linux_web_app" "wap_qa_name" {
     status      = var.wap_status_qa
   }
 
-  site_config {}
+  site_config {
+    default_documents = ["index.html","index.htm"]
+    application_stack {
+      php_version = "8.2"
+    }
+  }
 }
 
 resource "azurerm_linux_web_app" "wap_pd_name" {
@@ -95,5 +125,10 @@ resource "azurerm_linux_web_app" "wap_pd_name" {
     status      = var.wap_status_pd
   }
 
-  site_config {}
+  site_config {
+    default_documents = ["index.html","index.htm"]
+    application_stack {
+      php_version = "8.2"
+    }    
+  }
 }
