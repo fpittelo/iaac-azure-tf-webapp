@@ -8,7 +8,7 @@ pool:
 variables:
   rg_group: 'LABS'
   sa_name: 'iaaclabs'
-  cont_name: 'iaacazuretfwebapp'
+  cont_name: 'webapp'
   storage_key: 'terraform.tfstate'
 
 stages:
@@ -28,7 +28,7 @@ stages:
               backendServiceArm: 'iaac-service'
               backendAzureRmResourceGroupName: 'LABS'
               backendAzureRmStorageAccountName: 'iaaclabs'
-              backendAzureRmContainerName: 'iaacazuretfwebapp'
+              backendAzureRmContainerName: 'webapp'
               backendAzureRmKey: 'terraform.tfstate'
           - task: TerraformTaskV3@3
             displayName: plan
