@@ -19,7 +19,7 @@ variable "tenant_id" {
 #### variable for client_secret ####
 variable "client_secret" {
   type    = string
-  default = "1Vl8Q~lJBHgg9GsPwuxErqJeHE~tZhq02pz2nbp4"
+  default = "Oq58Q~ZubrsaZ2hRONLsLrb1IYzsGRwa_8G7MbWL"
 }
 
 #### variable for tag project ####
