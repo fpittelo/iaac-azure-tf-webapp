@@ -7,7 +7,8 @@ variable "subscription_id" {
 #### variable for client_id ####
 variable "client_id" {
   type    = string
-  default = "60ab9702-ec7c-4c22-a97b-99ca2dd561b9"
+  default = "79ec6375-29a4-4e5d-93a9-206c5950f369"
+# default = "60ab9702-ec7c-4c22-a97b-99ca2dd561b9"
 }
 
 #### variable for tenant_id ####
@@ -19,7 +20,8 @@ variable "tenant_id" {
 #### variable for client_secret ####
 variable "client_secret" {
   type    = string
-  default = "J1X8Q~CafN2rr5oy0xW5FiB1GKY~gmk9uQhCectv"
+  default = "1Vl8Q~lJBHgg9GsPwuxErqJeHE~tZhq02pz2nbp4"
+# default = "J1X8Q~CafN2rr5oy0xW5FiB1GKY~gmk9uQhCectv"
 }
 
 #### variable for tag project ####

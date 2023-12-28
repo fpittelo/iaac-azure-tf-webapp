@@ -11,7 +11,7 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "LABS"
     storage_account_name = "iaaclabs"
-    container_name       = "iaacazuredatamgt"
+    container_name       = "iaacazuretfwebapp"
     key                  = "terraform.tfstate"
   }
 }

@@ -25,7 +25,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'init'
-              backendServiceArm: 'terraform'
+              backendServiceArm: 'iaac-service'
               backendAzureRmResourceGroupName: 'LABS'
               backendAzureRmStorageAccountName: 'iaaclabs'
               backendAzureRmContainerName: 'iaacazuretfwebapp'
@@ -35,10 +35,10 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'plan'
-              environmentServiceNameAzureRM: 'terraform'
+              environmentServiceNameAzureRM: 'iaac-service'
           - task: TerraformTaskV3@3
             displayName: destroy
             inputs:
               provider: 'azurerm'
               command: 'destroy'
-              environmentServiceNameAzureRM: 'terraform'
+              environmentServiceNameAzureRM: 'iaac-service'
