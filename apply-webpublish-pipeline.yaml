@@ -70,7 +70,7 @@ stages:
               command: 'apply'
               environmentServiceNameAzureRM: 'iaac-service'
   - stage: triggerGitHubWorkflow
-    displayName: Trigger GitHub Workflow
+    displayName: Start GitHub Workflow
     condition: succeeded('deploy')
     dependsOn: deploy
     jobs:
@@ -83,11 +83,11 @@ stages:
               } | ConvertTo-Json
 
               $headers = @{
-                Authorization = "token $(iaac-webapp-pat)"
+                Authorization = "token $env:IAAC_WEBAPP_PAT"
                 Accept = "application/vnd.github.v3+json"
               }
 
               Invoke-RestMethod -Uri "https://api.github.com/repos/fpittelo/website/actions/workflows/dev_wap-dv(dev).yml/dispatches" -Method Post -Body $body -Headers $headers
             displayName: 'Invoke GitHub Workflow'
             env:
-              iaac-webapp-pat: $(iaac-webapp-pat)  # Use the variable group to reference the PAT
+              IAAC_WEBAPP_PAT: $(iaac-webapp-pat)  # Use the variable group to reference the PAT
