@@ -12,6 +12,14 @@ variables:
   cont_name: 'webapp'
   storage_key: 'terraform.tfstate'
 
+resources:
+  repositories:
+  - repository: website
+    type: github
+    name: fpittelo/website
+    endpoint: [fpittelo]
+    ref: refs/heads/dev
+
 stages:
   - stage: validate
     jobs:

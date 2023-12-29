@@ -1,30 +1,12 @@
-trigger:
-- none
+steps:
+  - checkout: website
+    displayName: "Checkout Code"
 
-pool:
-  vmImage: 'ubuntu-latest'
-
-resources:
-  repositories:
-  - repository: website
-    type: github
-    name: fpittelo/website
-    endpoint: [fpitelo]
-    ref: "refs/heads/dev"
-
-stages:
-  - stage: BuildAndDeploy
-    displayName: "Deploy Stage"
-    jobs:
-      - job: BuildAndDeployJob
-        displayName: "Deploy Job"
-        steps:
-          - checkout: website
-            displayName: "Checkout Code"
-          - task: AzureWebApp@1
-            displayName: 'Deploy to wap-dv'
-            inputs:
-              azureSubscription: 'iaac-service'
-              appName: 'wap-dv'
-              slotName: 'dev'
-              package: $(Build.ArtifactStagingDirectory) # or specify the path to your build artifacts
+  # Any additional steps required for deployment
+  - task: AzureWebApp@1
+    displayName: 'Deploy to Azure Web App'
+    inputs:
+      azureSubscription: 'iaac-service'
+      appName: 'wap-dv'
+      slotName: 'dev'
+      package: $(Build.ArtifactStagingDirectory) # Adjust as needed
