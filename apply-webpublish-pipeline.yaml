@@ -69,28 +69,25 @@ stages:
               provider: 'azurerm'
               command: 'apply'
               environmentServiceNameAzureRM: 'iaac-service'
-##- stage: webpublish
-#   condition: succeeded('deploy')
-#   dependsOn: deploy
-#   jobs:
-#   - job: webpublish
-#     steps:
-#       
-#       - script: sleep 60  # Delay for resource availability
-#         displayName: 'Delay for resource check'
-#       
-#       - checkout: self
-#
-#       # Add a step to zip your PHP files
-#       - script: zip -r app.zip .
-#         displayName: 'Package PHP Application'
-#
-#       - task: AzureRmWebAppDeployment@4
-#         inputs:
-#           displayName: webpublish
-#           ConnectionType: 'AzureRM'
-#           azureSubscription: 'Terraform'  # Define your Azure subscription service connection
-#           appType: 'webAppLinux'  # Use 'webAppLinux' or 'webApp' depending on your app type
-#           WebAppName: 'wap-dv'  # The name of the Azure Web App
-#           packageForLinux: '$(System.DefaultWorkingDirectory)/app.zip'  # Path to your PHP code or package
-#           # Additional parameters as needed
+  - stage: triggerGitHubWorkflow
+    displayName: Trigger GitHub Workflow
+    condition: succeeded('deploy')
+    dependsOn: deploy
+    jobs:
+      - job: callGitHubWorkflow
+        displayName: Call GitHub Workflow
+        steps:
+          - powershell: |
+              $body = @{
+                ref = "refs/heads/dev"
+              } | ConvertTo-Json
+
+              $headers = @{
+                Authorization = "token $(iaac-webapp-pat)"
+                Accept = "application/vnd.github.v3+json"
+              }
+
+              Invoke-RestMethod -Uri "https://api.github.com/repos/fpittelo/website/actions/workflows/dev_wap-dv(dev).yml/dispatches" -Method Post -Body $body -Headers $headers
+            displayName: 'Invoke GitHub Workflow'
+            env:
+              iaac-webapp-pat: $(iaac-webapp-pat)  # Use the variable group to reference the PAT
