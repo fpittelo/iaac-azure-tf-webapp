@@ -1,0 +1,12 @@
+steps:
+  - checkout: website
+    displayName: "Checkout Code"
+
+  # Any additional steps required for deployment
+  - task: AzureWebApp@1
+    displayName: 'Deploy to Azure Web App'
+    inputs:
+      azureSubscription: 'iaac-service'
+      appName: 'wap-dv'
+      slotName: 'dev'
+      package: $(Build.ArtifactStagingDirectory) # Adjust as needed
