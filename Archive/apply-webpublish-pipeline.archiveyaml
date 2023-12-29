@@ -9,7 +9,7 @@ variables:
 
   rg_group: 'LABS'
   sa_name: 'iaaclabs'
-  cont_name: 'iaacazuretfwebapp'
+  cont_name: 'webapp'
   storage_key: 'terraform.tfstate'
 
 stages:
@@ -27,10 +27,10 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'init'
-            backendServiceArm: 'terraform'
+            backendServiceArm: 'iaac-service'
             backendAzureRmResourceGroupName: 'LABS'
             backendAzureRmStorageAccountName: 'iaaclabs'
-            backendAzureRmContainerName: 'iaacazuretfwebapp'
+            backendAzureRmContainerName: 'webapp'
             backendAzureRmKey: 'terraform.tfstate'
         - task: TerraformTaskV3@3
           displayName: validate
@@ -52,45 +52,42 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'init'
-              backendServiceArm: 'terraform'
+              backendServiceArm: 'iaac-service'
               backendAzureRmResourceGroupName: 'LABS'
               backendAzureRmStorageAccountName: 'iaaclabs'
-              backendAzureRmContainerName: 'iaacazuretfwebapp'
+              backendAzureRmContainerName: 'webapp'
               backendAzureRmKey: 'terraform.tfstate'
           - task: TerraformTaskV3@3
             displayName: plan
             inputs:
               provider: 'azurerm'
               command: 'plan'
-              environmentServiceNameAzureRM: 'terraform'
+              environmentServiceNameAzureRM: 'iaac-service'
           - task: TerraformTaskV3@3
             displayName: apply
             inputs:
               provider: 'azurerm'
               command: 'apply'
-              environmentServiceNameAzureRM: 'terraform'
-  - stage: webpublish
+              environmentServiceNameAzureRM: 'iaac-service'
+  - stage: triggerGitHubWorkflow
+    displayName: Start GitHub Workflow
     condition: succeeded('deploy')
     dependsOn: deploy
     jobs:
-    - job: webpublish
-      steps:
-        
-        - script: sleep 90  # Delay for resource availability
-          displayName: 'Delay for resource check'
-        
-        - checkout: self
+      - job: callGitHubWorkflow
+        displayName: Call GitHub Workflow
+        steps:
+          - powershell: |
+              $body = @{
+                ref = "refs/heads/dev"
+              } | ConvertTo-Json
 
-        # Add a step to zip your PHP files
-        - script: zip -r app.zip .
-          displayName: 'Package PHP Application'
+              $headers = @{
+                Authorization = "token $env:IAAC_WEBAPP_PAT"
+                Accept = "application/vnd.github.v3+json"
+              }
 
-        - task: AzureRmWebAppDeployment@4
-          inputs:
-            displayName: webpublish
-            ConnectionType: 'AzureRM'
-            azureSubscription: 'Terraform'  # Define your Azure subscription service connection
-            appType: 'webAppLinux'  # Use 'webAppLinux' or 'webApp' depending on your app type
-            WebAppName: 'wap-dv'  # The name of the Azure Web App
-            packageForLinux: '$(System.DefaultWorkingDirectory)/app.zip'  # Path to your PHP code or package
-            # Additional parameters as needed
+              Invoke-RestMethod -Uri "https://api.github.com/repos/fpittelo/website/actions/workflows/dev_wap-dv(dev).yml/dispatches" -Method Post -Body $body -Headers $headers
+            displayName: 'Invoke GitHub Workflow'
+            env:
+              IAAC_WEBAPP_PAT: $(iaac-webapp-pat)  # Use the variable group to reference the PAT
