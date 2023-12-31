@@ -11,7 +11,7 @@
 # }
 #}
 
-resource "azurerm_service_plan" "wap_sp_name" {
+resource "azurerm_service_plan" "wap_sp_webapp" {
   name                = var.wap_sp_name
   location            = var.wap_rg_location
   resource_group_name = var.wap_rg_name
@@ -26,11 +26,11 @@ resource "azurerm_service_plan" "wap_sp_name" {
 
 }
 
-resource "azurerm_linux_web_app" "wap_dv_name" {
-  name                = var.wap_dv_name
+resource "azurerm_linux_web_app" "wap_webapp" {
+  name                = var.wap_webapp_name
   resource_group_name = var.wap_rg_name
   location            = var.wap_rg_location
-  service_plan_id     = azurerm_service_plan.wap_sp_name.id
+  service_plan_id     = azurerm_service_plan.wap_sp_webapp.id
 
   tags = {
     project     = var.project
@@ -49,7 +49,7 @@ resource "azurerm_linux_web_app" "wap_dv_name" {
 
 resource "azurerm_linux_web_app_slot" "dev" {
   name            = "dev"
-  app_service_id  = azurerm_linux_web_app.wap_dv_name.id
+  app_service_id  = azurerm_linux_web_app.wap_webapp.id
 
   site_config {
     default_documents = ["index.html","index.htm"]
@@ -61,7 +61,7 @@ resource "azurerm_linux_web_app_slot" "dev" {
 
 resource "azurerm_linux_web_app_slot" "qa" {
   name            = "qa"
-  app_service_id  = azurerm_linux_web_app.wap_dv_name.id
+  app_service_id  = azurerm_linux_web_app.wap_webapp.id
 
   site_config {
     default_documents = ["index.html","index.htm"]
@@ -73,7 +73,7 @@ resource "azurerm_linux_web_app_slot" "qa" {
 
 resource "azurerm_linux_web_app_slot" "prod" {
   name            = "prod"
-  app_service_id  = azurerm_linux_web_app.wap_dv_name.id
+  app_service_id  = azurerm_linux_web_app.wap_webapp.id
 
   site_config {
     default_documents = ["index.html","index.htm"]
@@ -83,7 +83,7 @@ resource "azurerm_linux_web_app_slot" "prod" {
   }
 }
 
-#resource "azurerm_linux_web_app" "wap_qa_name" {
+#resource "azurerm_linux_web_app" "wap_webapp_qa" {
 # name                = var.wap_qa_name
 # resource_group_name = var.wap_rg_name
 # location            = var.wap_rg_location
