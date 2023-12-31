@@ -38,6 +38,16 @@ variable "wap_rg_name" {
   default = "LABS"
 }
 
+variable "wap_sa_name" {
+  type = string
+  default = "iaaclabs"
+}
+
+variable "wap_cont_name" {
+  type = string
+  default = "iaacazuretfwebapp"
+}
+
 variable "wap_rg_location" {
   type = string
   default = "Switzerland North"
@@ -45,7 +55,7 @@ variable "wap_rg_location" {
 
 variable "wap_sp_name" {
   type = string
-  default = "wap-sp"
+  default = "wap-sp-webapp"
 }
 
 variable "wap_sp_sku" {
@@ -68,19 +78,19 @@ variable "department" {
   default = "IT"
 }
 
-variable "wap_dv_name" {
+variable "wap_webapp_name" {
   type = string
-  default = "wap-dv"
+  default = "wap-webapp"
 }
 
-variable "wap_qa_name" {
+variable "wap_webapp_qa" {
   type = string
-  default = "wap-qa"
+  default = "wap-webapp-qa"
 }
 
-variable "wap_pd_name" {
+variable "wap_webapp_prod" {
   type = string
-  default = "wap-pd"
+  default = "wap-webapp-prod"
 }
 
 variable "wap_status_dv" {
