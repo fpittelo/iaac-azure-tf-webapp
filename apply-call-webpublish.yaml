@@ -1,0 +1,82 @@
+---
+trigger: none
+pool:
+  vmImage: ubuntu-latest
+variables:
+  rg_group: LABS
+  sa_name: iaaclabs
+  cont_name: iaacazuretfwebapp
+  storage_key: terraform.tfstate
+resources:
+  repositories:
+    - repository: website
+      type: github
+      name: fpittelo/website
+      endpoint: iaac-github
+      ref: refs/heads/dev
+stages:
+  - stage: validate
+    jobs:
+      - job: validate
+        continueOnError: false
+        steps:
+          - task: TerraformInstaller@0
+            displayName: install
+            inputs:
+              terraformVersion: latest
+          - task: TerraformTaskV3@3
+            displayName: init
+            inputs:
+              provider: azurerm
+              command: init
+              backendServiceArm: iaac-service
+              backendAzureRmResourceGroupName: LABS
+              backendAzureRmStorageAccountName: iaaclabs
+              backendAzureRmContainerName: iaacazuretfwebapp
+              backendAzureRmKey: terraform.tfstate
+          - task: TerraformTaskV3@3
+            displayName: validate
+            inputs:
+              provider: azurerm
+              command: validate
+  - stage: deploy
+    condition: succeeded('validate')
+    dependsOn: validate
+    jobs:
+      - job: apply
+        steps:
+          - task: TerraformInstaller@0
+            displayName: install
+            inputs:
+              terraformVersion: latest
+          - task: TerraformTaskV3@3
+            displayName: init
+            inputs:
+              provider: azurerm
+              command: init
+              backendServiceArm: iaac-service
+              backendAzureRmResourceGroupName: LABS
+              backendAzureRmStorageAccountName: iaaclabs
+              backendAzureRmContainerName: iaacazuretfwebapp
+              backendAzureRmKey: terraform.tfstate
+          - task: TerraformTaskV3@3
+            displayName: plan
+            inputs:
+              provider: azurerm
+              command: plan
+              environmentServiceNameAzureRM: iaac-service
+          - task: TerraformTaskV3@3
+            displayName: apply
+            inputs:
+              provider: azurerm
+              command: apply
+              environmentServiceNameAzureRM: iaac-service
+  - stage: webPublish
+    displayName: webPublish
+    condition: succeeded('deploy')
+    dependsOn: deploy
+    jobs:
+      - job: webPublishJob
+        displayName: webPublish job
+        steps:
+          - template: webpublish-pipeline.yaml

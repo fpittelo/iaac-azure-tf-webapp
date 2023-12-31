@@ -7,6 +7,6 @@ steps:
     displayName: 'Deploy to Azure Web App'
     inputs:
       azureSubscription: 'iaac-service'
-      appName: 'wap-dv'
+      appName: 'wap-webapp'
       slotName: 'dev'
       package: $(Build.ArtifactStagingDirectory) # Adjust as needed
