@@ -1,5 +1,4 @@
-trigger:
-  - none
+##### web publish steps ###
 steps:
   - checkout: website
     displayName: "Checkout Code"
