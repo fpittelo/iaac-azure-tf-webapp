@@ -1,6 +1,7 @@
 ---
 trigger:
-  - none
+  - dev
+pr: none
 pool:
   vmImage: ubuntu-latest
 variables:
