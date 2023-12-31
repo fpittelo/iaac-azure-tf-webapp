@@ -1,5 +1,5 @@
-trigger: none
-
+trigger:
+  - none
 steps:
   - checkout: website
     displayName: "Checkout Code"
