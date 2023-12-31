@@ -2,6 +2,10 @@ steps:
   - checkout: website
     displayName: "Checkout Code"
 
+  - script:
+      zip -r $(Build.ArtifactStagingDirectory)/app.zip .
+    displayName: 'Create ZIP Package'
+
   # Any additional steps required for deployment
   - task: AzureWebApp@1
     displayName: 'Deploy to Azure Web App'
@@ -9,4 +13,4 @@ steps:
       azureSubscription: 'iaac-service'
       appName: 'wap-webapp'
       slotName: 'dev'
-      package: $(Build.ArtifactStagingDirectory) # Adjust as needed
+      package: $(Build.ArtifactStagingDirectory)/app.zip # Adjust as needed
