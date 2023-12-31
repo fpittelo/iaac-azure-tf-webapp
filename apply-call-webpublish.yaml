@@ -5,7 +5,7 @@ pool:
 variables:
   rg_group: LABS
   sa_name: iaaclabs
-  cont_name: webapp
+  cont_name: iaacazuretfwebapp
   storage_key: terraform.tfstate
 resources:
   repositories:
@@ -32,7 +32,7 @@ stages:
               backendServiceArm: iaac-service
               backendAzureRmResourceGroupName: LABS
               backendAzureRmStorageAccountName: iaaclabs
-              backendAzureRmContainerName: webapp
+              backendAzureRmContainerName: iaacazuretfwebapp
               backendAzureRmKey: terraform.tfstate
           - task: TerraformTaskV3@3
             displayName: validate
@@ -57,7 +57,7 @@ stages:
               backendServiceArm: iaac-service
               backendAzureRmResourceGroupName: LABS
               backendAzureRmStorageAccountName: iaaclabs
-              backendAzureRmContainerName: webapp
+              backendAzureRmContainerName: iaacazuretfwebapp
               backendAzureRmKey: terraform.tfstate
           - task: TerraformTaskV3@3
             displayName: plan

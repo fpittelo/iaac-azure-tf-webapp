@@ -38,6 +38,16 @@ variable "wap_rg_name" {
   default = "LABS"
 }
 
+variable "wap_sa_name" {
+  type = string
+  default = "iaaclabs"
+}
+
+variable "wap_cont_name" {
+  type = string
+  default = "iaacazuretfwebapp"
+}
+
 variable "wap_rg_location" {
   type = string
   default = "Switzerland North"
