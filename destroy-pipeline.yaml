@@ -2,6 +2,14 @@
 
 trigger: none
 
+schedules:
+- cron: "0 23 * * *" # This is 11 PM UTC, which corresponds to midnight CET (UTC+1).
+  displayName: Daily Midnight Run CET
+  branches:
+    include:
+    - dev # Replace with the branch you want to build
+  always: true
+
 pool:
   vmImage: ubuntu-latest
 

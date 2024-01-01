@@ -1,5 +1,22 @@
 ---
-trigger: none
+trigger:
+  branches:
+    include:
+    - dev
+  paths:
+    exclude: # You can exclude paths that don't require a build.
+    - README.md 
+    - .gitignore
+
+pr:
+  autoCancel: true # Cancels running jobs if a new update to the same PR is pushed.
+  branches:
+    include:
+    - main
+    exclude:
+    - dev
+    - qa
+
 pool:
   vmImage: ubuntu-latest
 variables:
