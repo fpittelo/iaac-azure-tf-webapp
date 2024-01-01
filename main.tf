@@ -59,6 +59,21 @@ resource "azurerm_linux_web_app_slot" "dev" {
   }
 }
 
+resource "azurerm_log_analytics_workspace" "iaac-webapp-logs" {
+  name                = "iaac-webapp-logs"
+  resource_group_name = var.wap_rg_name
+  location            = var.wap_rg_location
+  sku                 = "Standard"
+  retention_in_days   = 30
+
+  tags = {
+    project     = var.project
+    owner       = var.owner
+    dept        = var.department
+    status      = var.wap_status_dv
+  }
+}
+
 resource "azurerm_linux_web_app_slot" "qa" {
   name            = "qa"
   app_service_id  = azurerm_linux_web_app.wap_webapp.id
