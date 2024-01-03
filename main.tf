@@ -11,6 +11,39 @@
 # }
 #}
 
+data "azurerm_client_config" "current" {}
+
+resource "azurerm_key_vault" "iaacvault" {
+  name                            = var.vault_name
+  location                        = var.wap_rg_location
+  resource_group_name             = var.wap_rg_name
+  enabled_for_deployment          = true
+  enabled_for_disk_encryption     = true
+  enabled_for_template_deployment = true
+  tenant_id           = data.azurerm_client_config.current.tenant_id
+  sku_name            = "standard"
+  soft_delete_retention_days = 7
+  public_network_access_enabled = true
+  network_acls {
+    bypass          = "AzureServices"
+    default_action  = "Deny"
+    ip_rules        = ["178.193.30.41"]
+  }
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+    key_permissions = [
+      "Get",
+    ]
+    secret_permissions = [
+      "Get",
+    ]
+    storage_permissions = [
+      "Get",
+    ]
+  }
+}
+
 resource "azurerm_service_plan" "wap_sp_webapp" {
   name                = var.wap_sp_name
   location            = var.wap_rg_location

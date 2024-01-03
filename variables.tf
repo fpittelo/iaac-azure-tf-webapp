@@ -16,6 +16,12 @@ variable "tenant_id" {
   default = "4c8896b7-52b2-4cb4-9533-1dc0c937e1ed"
 }
 
+#### variable for vault_name ####
+variable "vault_name" {
+  type    = string
+  default = "iaac-webapp-vault"
+}
+
 #### variable for client_secret ####
 variable "client_secret" {
   type    = string
