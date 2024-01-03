@@ -107,6 +107,11 @@ resource "azurerm_log_analytics_workspace" "iaac_webapp_logs" {
   }
 }
 
+data "azurerm_log_analytics_workspace" "iaac_webapp_logs" {
+  name                  = "iaac-webapp-logs"
+  resource_group_name   = var.wap_rg_name
+}
+
 resource "azurerm_monitor_diagnostic_setting" "webapp_diag_setting" {
   name                        = "webapp-diag-setting"
   target_resource_id          = azurerm_linux_web_app_slot.dev.id
@@ -114,6 +119,20 @@ resource "azurerm_monitor_diagnostic_setting" "webapp_diag_setting" {
 
   enabled_log {
     category  = "AppServiceHTTPLogs"
+  }
+}
+
+resource "azurerm_monitor_diagnostic_setting" "iaacvault" {
+  name                        = "iaac-webapp-vault-logs"
+  target_resource_id          = azurerm_key_vault.iaacvault.id
+  log_analytics_workspace_id  = data.azurerm_log_analytics_workspace.iaac_webapp_logs.id
+
+  enabled_log {
+    category  = "AuditEvent"
+  }
+  metric {
+    category = "AllMetrics"
+    enabled = true
   }
 }
 
