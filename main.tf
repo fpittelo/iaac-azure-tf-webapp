@@ -44,6 +44,21 @@ resource "azurerm_key_vault" "iaacvault" {
   }
 }
 
+resource "azurerm_key_vault_access_policy" "iaacvault_acc_policy" {
+  key_vault_id = azurerm_key_vault.iaacvault.id
+  tenant_id = var.tenant_id
+  object_id = var.sp_object_id
+  key_permissions = [
+    "Get",
+  ]
+  secret_permissions = [
+    "Get",
+  ]
+  certificate_permissions = [
+    "Create",
+  ]
+}
+
 resource "azurerm_key_vault_certificate" "iaac_webapp_cert" {
   name                  = "iaac-webapp-cert"
   key_vault_id          = azurerm_key_vault.iaacvault.id
