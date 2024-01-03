@@ -44,6 +44,37 @@ resource "azurerm_key_vault" "iaacvault" {
   }
 }
 
+resource "azurerm_key_vault_certificate" "iaac_webapp_cert" {
+  name                  = "iaac-webapp-cert"
+  key_vault_id          = azurerm_key_vault.iaacvault.id
+    certificate_policy {
+    issuer_parameters {
+      name = "Self"
+    }
+    secret_properties {
+      content_type = "application/x-pkcs12"
+    }
+    key_properties {
+      exportable = true
+      key_type = "RSA"
+      key_size = 2048
+      reuse_key = false
+    }
+    x509_certificate_properties {
+      subject = "CN=fpittelo.ch"
+      validity_in_months = 36
+      key_usage = [
+        "digitalSignature",
+        "keyEncipherment",
+      ]
+      extended_key_usage = [
+        "serverAuth",
+        "clientAuth",
+      ]
+    }
+  }
+}
+
 resource "azurerm_service_plan" "wap_sp_webapp" {
   name                = var.wap_sp_name
   location            = var.wap_rg_location
