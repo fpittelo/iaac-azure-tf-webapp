@@ -22,10 +22,10 @@ variable "vault_name" {
   default = "iaac-webapp-vault"
 }
 
-#### variable for iaac-service object id ####
+#### variable for iaac-service enterprise application object id ####
 variable "sp_object_id" {
   type    = string
-  default = "fd1a659b-2111-406d-92c9-42b7fa120a78"
+  default = "32866622-cfa0-40f3-8ba9-581a1d0cf76b"
 }
 
 #### variable for client_secret ####
