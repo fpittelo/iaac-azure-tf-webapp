@@ -48,6 +48,7 @@ resource "azurerm_key_vault_access_policy" "iaacvault_acc_policy" {
   key_vault_id = azurerm_key_vault.iaacvault.id
   tenant_id = var.tenant_id
   object_id = var.sp_object_id
+  
   key_permissions = [
     "Get",
   ]
@@ -56,6 +57,14 @@ resource "azurerm_key_vault_access_policy" "iaacvault_acc_policy" {
   ]
   certificate_permissions = [
     "Get",
+    "List",
+    "Update",
+    "Create",
+    "Delete",
+    "Recover",
+    "Backup",
+    "Restore",
+    "Purge",     
   ]
 }
 
