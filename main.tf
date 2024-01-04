@@ -25,9 +25,21 @@ resource "azurerm_key_vault" "iaacvault" {
   soft_delete_retention_days      = 7
   public_network_access_enabled   = true
   network_acls {
-    bypass          = "AzureServices"
     default_action  = "Deny"
-    ip_rules        = ["178.193.30.41","108.140.5.168/30","4.233.0.0/16","51.103.203.128/27","51.103.205.160/31",]
+    bypass          = "AzureServices"
+    ip_rules = [
+      "4.198.32.0/19",
+      "4.254.128.0/17",
+      "13.104.158.224/27",
+      "20.33.146.0/24",
+      "20.36.64.0/19",
+      "20.36.112.0/20",
+      "20.39.72.0/21",
+      "20.39.96.0/19",
+      "20.47.36.0/24",
+      "20.53.56.0/21",
+      // ... additional IP ranges as needed ...
+    ]
   }
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
