@@ -32,6 +32,7 @@ resource "azurerm_key_vault" "iaacvault" {
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
+    
     key_permissions = [
       "Get",
     ]
@@ -48,7 +49,8 @@ resource "azurerm_key_vault_access_policy" "iaacvault_acc_policy" {
   key_vault_id = azurerm_key_vault.iaacvault.id
   tenant_id = var.tenant_id
   object_id = var.sp_object_id
-  
+  depends_on = [ azurerm_key_vault.iaacvault ]
+
   key_permissions = [
     "Get",
   ]
@@ -69,7 +71,7 @@ resource "azurerm_key_vault_access_policy" "iaacvault_acc_policy" {
 }
 
 resource "azurerm_key_vault_certificate" "iaac_webapp_cert" {
-  depends_on = [ azurerm_key_vault.iaacvault ]
+  depends_on = [ azurerm_key_vault.iaacvault, azurerm_key_vault_access_policy.iaacvault_acc_policy ]
   name                  = "iaac-webapp-cert"
   key_vault_id          = azurerm_key_vault.iaacvault.id
     certificate_policy {
