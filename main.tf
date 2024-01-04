@@ -55,7 +55,7 @@ resource "azurerm_key_vault_access_policy" "iaacvault_acc_policy" {
     "Get",
   ]
   certificate_permissions = [
-    "Create",
+    "Get",
   ]
 }
 
