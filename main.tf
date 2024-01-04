@@ -60,6 +60,7 @@ resource "azurerm_key_vault_access_policy" "iaacvault_acc_policy" {
 }
 
 resource "azurerm_key_vault_certificate" "iaac_webapp_cert" {
+  depends_on = [ azurerm_key_vault.iaacvault ]
   name                  = "iaac-webapp-cert"
   key_vault_id          = azurerm_key_vault.iaacvault.id
     certificate_policy {
