@@ -33,45 +33,48 @@ resource "azurerm_key_vault" "iaacvault" {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
     
-    key_permissions = [
+    certificate_permissions = [
+      "Create",
+      "Update",
+      "Delete",
+      "Recover",
+      "Backup",
+      "Restore",
+      "Purge",
       "Get",
+      "List",
+    ]
+
+    key_permissions = [
+      "Create",
+      "Update",
+      "Delete",
+      "Recover",
+      "Backup",
+      "Restore",
+      "Purge",
+      "Get",
+      "List",
     ]
     secret_permissions = [
       "Get",
     ]
     storage_permissions = [
+      "Set",
+      "Delete",
+      "Recover",
+      "Backup",
+      "Restore",
+      "Purge",
       "Get",
+      "List",
     ]
   }
 }
 
-resource "azurerm_key_vault_access_policy" "iaacvault_acc_policy" {
-  key_vault_id = azurerm_key_vault.iaacvault.id
-  tenant_id = var.tenant_id
-  object_id = var.sp_object_id
-  depends_on = [ azurerm_key_vault.iaacvault ]
-
-  key_permissions = [
-    "Get",
-  ]
-  secret_permissions = [
-    "Get",
-  ]
-  certificate_permissions = [
-    "Get",
-    "List",
-    "Update",
-    "Create",
-    "Delete",
-    "Recover",
-    "Backup",
-    "Restore",
-    "Purge",     
-  ]
-}
 
 resource "azurerm_key_vault_certificate" "iaac_webapp_cert" {
-  depends_on = [ azurerm_key_vault.iaacvault, azurerm_key_vault_access_policy.iaacvault_acc_policy ]
+  depends_on = [ azurerm_key_vault.iaacvault ]
   name                  = "iaac-webapp-cert"
   key_vault_id          = azurerm_key_vault.iaacvault.id
     certificate_policy {
@@ -141,6 +144,7 @@ resource "azurerm_linux_web_app" "wap_webapp" {
 resource "azurerm_linux_web_app_slot" "dev" {
   name            = "dev"
   app_service_id  = azurerm_linux_web_app.wap_webapp.id
+  depends_on = [ azurerm_key_vault_certificate.iaac_webapp_cert ]
 
   site_config {
     default_documents = ["index.html","index.htm"]
