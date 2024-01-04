@@ -27,7 +27,7 @@ resource "azurerm_key_vault" "iaacvault" {
   network_acls {
     bypass          = "AzureServices"
     default_action  = "Deny"
-  # ip_rules        = ["178.193.30.41", "108.140.5.168/30", "4.233.0.0/16"]
+    ip_rules        = ["178.193.30.41","108.140.5.168/30","4.233.0.0/16","51.103.203.128/27","51.103.205.160/31",]
   }
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
