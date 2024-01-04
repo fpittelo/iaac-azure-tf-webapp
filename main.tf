@@ -100,8 +100,8 @@ resource "azurerm_key_vault_certificate" "iaac_webapp_cert" {
         "keyEncipherment",
       ]
       extended_key_usage = [
-        "serverAuth",
-        "clientAuth",
+        "1.3.6.1.5.5.7.3.1",  // OID for serverAuth
+        "1.3.6.1.5.5.7.3.2",  // OID for clientAuth, include if needed
       ]
     }
   }
