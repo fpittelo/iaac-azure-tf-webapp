@@ -16,6 +16,18 @@ variable "tenant_id" {
   default = "4c8896b7-52b2-4cb4-9533-1dc0c937e1ed"
 }
 
+#### variable for vault_name ####
+variable "vault_name" {
+  type    = string
+  default = "iaac-webapp-vault"
+}
+
+#### variable for iaac-service enterprise application object id ####
+variable "sp_object_id" {
+  type    = string
+  default = "32866622-cfa0-40f3-8ba9-581a1d0cf76b"
+}
+
 #### variable for client_secret ####
 variable "client_secret" {
   type    = string

@@ -11,6 +11,102 @@
 # }
 #}
 
+data "azurerm_client_config" "current" {}
+
+resource "azurerm_key_vault" "iaacvault" {
+  name                            = var.vault_name
+  location                        = var.wap_rg_location
+  resource_group_name             = var.wap_rg_name
+  enabled_for_deployment          = true
+  enabled_for_disk_encryption     = true
+  enabled_for_template_deployment = true
+  tenant_id                       = data.azurerm_client_config.current.tenant_id
+  sku_name                        = "standard"
+  soft_delete_retention_days      = 7
+  public_network_access_enabled   = true
+  
+  network_acls {
+    default_action  = "Allow"
+    bypass          = "AzureServices"
+  }
+  
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+    
+    certificate_permissions = [
+      "Create",
+      "Update",
+      "Delete",
+      "Recover",
+      "Backup",
+      "Restore",
+      "Purge",
+      "Get",
+      "List",
+    ]
+
+    key_permissions = [
+      "Create",
+      "Update",
+      "Delete",
+      "Recover",
+      "Backup",
+      "Restore",
+      "Purge",
+      "Get",
+      "List",
+    ]
+    secret_permissions = [
+      "Get",
+    ]
+    storage_permissions = [
+      "Set",
+      "Delete",
+      "Recover",
+      "Backup",
+      "Restore",
+      "Purge",
+      "Get",
+      "List",
+    ]
+  }
+}
+
+
+resource "azurerm_key_vault_certificate" "iaac_webapp_cert" {
+  name                  = "iaac-webapp-cert"
+  key_vault_id          = azurerm_key_vault.iaacvault.id
+  depends_on            = [ azurerm_key_vault.iaacvault ]
+
+    certificate_policy {
+    issuer_parameters {
+      name = "Self"
+    }
+    secret_properties {
+      content_type = "application/x-pkcs12"
+    }
+    key_properties {
+      exportable = true
+      key_type = "RSA"
+      key_size = 2048
+      reuse_key = false
+    }
+    x509_certificate_properties {
+      subject = "CN=fpittelo.ch"
+      validity_in_months = 36
+      key_usage = [
+        "digitalSignature",
+        "keyEncipherment",
+      ]
+      extended_key_usage = [
+        "1.3.6.1.5.5.7.3.1",  // OID for serverAuth
+        "1.3.6.1.5.5.7.3.2",  // OID for clientAuth, include if needed
+      ]
+    }
+  }
+}
+
 resource "azurerm_service_plan" "wap_sp_webapp" {
   name                = var.wap_sp_name
   location            = var.wap_rg_location
@@ -50,6 +146,7 @@ resource "azurerm_linux_web_app" "wap_webapp" {
 resource "azurerm_linux_web_app_slot" "dev" {
   name            = "dev"
   app_service_id  = azurerm_linux_web_app.wap_webapp.id
+  depends_on = [ azurerm_key_vault_certificate.iaac_webapp_cert ]
 
   site_config {
     default_documents = ["index.html","index.htm"]
@@ -81,6 +178,20 @@ resource "azurerm_monitor_diagnostic_setting" "webapp_diag_setting" {
 
   enabled_log {
     category  = "AppServiceHTTPLogs"
+  }
+}
+
+resource "azurerm_monitor_diagnostic_setting" "iaacvault" {
+  name                        = "iaac-webapp-vault-logs"
+  target_resource_id          = azurerm_key_vault.iaacvault.id
+  log_analytics_workspace_id  = azurerm_log_analytics_workspace.iaac_webapp_logs.id
+
+  enabled_log {
+    category  = "AuditEvent"
+  }
+  metric {
+    category = "AllMetrics"
+    enabled = true
   }
 }
 
