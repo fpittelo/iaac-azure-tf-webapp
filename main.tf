@@ -20,14 +20,14 @@ resource "azurerm_key_vault" "iaacvault" {
   enabled_for_deployment          = true
   enabled_for_disk_encryption     = true
   enabled_for_template_deployment = true
-  tenant_id           = data.azurerm_client_config.current.tenant_id
-  sku_name            = "standard"
-  soft_delete_retention_days = 7
-  public_network_access_enabled = true
+  tenant_id                       = data.azurerm_client_config.current.tenant_id
+  sku_name                        = "standard"
+  soft_delete_retention_days      = 7
+  public_network_access_enabled   = true
   network_acls {
     bypass          = "AzureServices"
     default_action  = "Deny"
-    ip_rules        = ["178.193.30.41"]
+    ip_rules        = ["178.193.30.41", "108.140.5.168/30"]
   }
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
@@ -74,9 +74,10 @@ resource "azurerm_key_vault" "iaacvault" {
 
 
 resource "azurerm_key_vault_certificate" "iaac_webapp_cert" {
-  depends_on = [ azurerm_key_vault.iaacvault ]
   name                  = "iaac-webapp-cert"
   key_vault_id          = azurerm_key_vault.iaacvault.id
+  depends_on            = [ azurerm_key_vault.iaacvault ]
+
     certificate_policy {
     issuer_parameters {
       name = "Self"
