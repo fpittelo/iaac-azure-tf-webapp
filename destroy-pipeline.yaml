@@ -24,6 +24,24 @@ stages:
     jobs:
       - job: destroy
         steps:
+          - task: AzureCLI@2
+            displayName: 'Azure CLI Login'
+            inputs:
+              azureSubscription: 'iaac-service' # Replace with your Azure service connection name
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                # Check if Key Vault exists
+                echo "Checking if Key Vault exists..."
+                exists=$(az keyvault list --query "[?name=='iaac-webapp-vault'].name" -o tsv)
+                if [ "$exists" != "" ]; then
+                  echo "Deleting Key Vault..."
+                  az keyvault delete --name iaac-webapp-vault
+                  echo "Purging Key Vault..."
+                  az keyvault purge --name iaac-webapp-vault
+                else
+                  echo "Key Vault not found or already deleted."
+                fi          
           - task: TerraformInstaller@0
             displayName: install
             inputs:
@@ -50,21 +68,3 @@ stages:
               provider: 'azurerm'
               command: 'destroy'
               environmentServiceNameAzureRM: 'iaac-service'
-          - task: AzureCLI@2
-            displayName: 'Azure CLI Login'
-            inputs:
-              azureSubscription: 'iaac-service' # Replace with your Azure service connection name
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                # Check if Key Vault exists
-                echo "Checking if Key Vault exists..."
-                exists=$(az keyvault list --query "[?name=='iaac-webapp-vault'].name" -o tsv)
-                if [ "$exists" != "" ]; then
-                  echo "Deleting Key Vault..."
-                  az keyvault delete --name iaac-webapp-vault
-                  echo "Purging Key Vault..."
-                  az keyvault purge --name iaac-webapp-vault
-                else
-                  echo "Key Vault not found or already deleted."
-                fi
