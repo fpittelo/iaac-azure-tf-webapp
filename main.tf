@@ -33,7 +33,7 @@ resource "azurerm_key_vault" "iaacvault" {
   
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.iaac_service.object_id
+    object_id = data.azurerm_client_config.current.object_id
     
     certificate_permissions = [
       "Create",
@@ -73,7 +73,6 @@ resource "azurerm_key_vault" "iaacvault" {
     ]
   }
 }
-
 
 resource "azurerm_key_vault_certificate" "iaac_webapp_cert" {
   name                  = "iaac-webapp-cert"
