@@ -22,7 +22,8 @@ resource "azurerm_key_vault" "iaacvault" {
   enabled_for_template_deployment = true
   tenant_id                       = data.azurerm_client_config.current.tenant_id
   sku_name                        = "standard"
-  soft_delete_retention_days      = 7
+# soft_delete_retention_days      = 7
+  purge_protection_enabled        = false
   public_network_access_enabled   = true
   
   network_acls {
@@ -32,7 +33,7 @@ resource "azurerm_key_vault" "iaacvault" {
   
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
+    object_id = data.azurerm_client_config.iaac_service.object_id
     
     certificate_permissions = [
       "Create",
