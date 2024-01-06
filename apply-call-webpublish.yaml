@@ -44,47 +44,14 @@ stages:
       - job: cleanUpKeyVault
         displayName: Clean Up Key Vault
         steps:
-          - task: TerraformInstaller@0
-            displayName: install
+          - task: AzureCLI@2
+            displayName: 'Purge Azure Key Vault'
             inputs:
-              terraformVersion: latest
-          - task: TerraformTaskV3@3
-            displayName: init
-            inputs:
-              provider: azurerm
-              command: init
-              backendServiceArm: $(service_acct)
-              backendAzureRmResourceGroupName: $(rg_group)
-              backendAzureRmStorageAccountName: $(sa_name)
-              backendAzureRmContainerName: $(cont_name)
-              backendAzureRmKey: $(storage_key)
-
-          # Import Diagnostic Setting state
-          - task: TerraformTaskV3@3
-            displayName: "Import Diagnostic Setting State"
-            inputs:
-              provider: azurerm
-              command: import
-              commandOptions: 'azurerm_monitor_diagnostic_setting.iaacvault "/subscriptions/a6f24a81-7804-44a9-b074-25a9781afd24/resourceGroups/LABS/providers/Microsoft.KeyVault/vaults/iaac-webapp-vault/providers/microsoft.insights/diagnosticSettings/iaac-webapp-vault-logs"'
-              environmentServiceNameAzureRM: iaac-service
-
-          # Import Key Vault state
-          - task: TerraformTaskV3@3
-            displayName: "Import Key Vault State"
-            inputs:
-              provider: azurerm
-              command: import
-              commandOptions: 'azurerm_key_vault.iaac_webapp_vault "/subscriptions/a6f24a81-7804-44a9-b074-25a9781afd24/resourceGroups/LABS/providers/Microsoft.KeyVault/vaults/iaac-webapp-vault"'
-              environmentServiceNameAzureRM: iaac-service
-
-          # Terraform destroy step for Key Vault
-          - task: TerraformTaskV3@3
-            displayName: "Purge Key Vault"
-            inputs:
-              provider: azurerm
-              command: destroy
-              commandOptions: '-target=azurerm_key_vault.iaac_webapp_vault -auto-approve'
-              environmentServiceNameAzureRM: iaac-service
+              azureSubscription: $(service_acct)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az keyvault purge --subscription a6f24a81-7804-44a9-b074-25a9781afd24 -n iaac-webapp-vault
   
   - stage: validate
     jobs:
