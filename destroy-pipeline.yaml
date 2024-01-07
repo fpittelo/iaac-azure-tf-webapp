@@ -52,7 +52,7 @@ stages:
               command: 'destroy'
               environmentServiceNameAzureRM: 'iaac-service'
   - stage: cleanUplabs
-    conditiion: always()
+    condition: always()
     displayName: Clean Key vault
     jobs:
       - job: cleanUpKeyVault
