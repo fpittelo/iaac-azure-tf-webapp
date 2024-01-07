@@ -21,26 +21,6 @@ variables:
   service_acct: 'iaac-service'
 
 stages:
-  - stage: cleanUplabs
-    displayName: Clean Key vault
-    jobs:
-      - job: cleanUpKeyVault
-        displayName: Clean Up Key Vault
-        steps:
-          - task: AzureCLI@2
-            displayName: 'Purge Azure Key Vault'
-            inputs:
-              azureSubscription: $(service_acct)
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                EXISTS=$(az keyvault list --subscription a6f24a81-7804-44a9-b074-25a9781afd24 --query "[?name=='iaac-webapp-vault'].name" -o tsv)
-                if [ "$EXISTS" == "iaac-webapp-vault" ]; then
-                  az keyvault purge --subscription a6f24a81-7804-44a9-b074-25a9781afd24 -n iaac-webapp-vault
-                  echo "Key Vault purged."
-                else
-                  echo "Key Vault not found, skipping purge."
-                fi
   - stage: destroy
     jobs:
       - job: destroy
@@ -71,3 +51,27 @@ stages:
               provider: 'azurerm'
               command: 'destroy'
               environmentServiceNameAzureRM: 'iaac-service'
+  - stage: cleanUplabs
+    conditiion: always()
+    displayName: Clean Key vault
+    jobs:
+      - job: cleanUpKeyVault
+        displayName: Clean Up Key Vault
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Purge Azure Key Vault'
+            inputs:
+              azureSubscription: $(service_acct)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                EXISTS=$(az keyvault list --subscription a6f24a81-7804-44a9-b074-25a9781afd24 --query "[?name=='iaac-webapp-vault'].name" -o tsv)
+                if [ "$EXISTS" == "iaac-webapp-vault" ]; then
+                  echo "Attempting to delete Key Vault..."
+                  az keyvault delete --name iaac-webapp-vault --subscription a6f24a81-7804-44a9-b074-25a9781afd24 --no-wait
+                  echo "Key Vault deletion initiated. Proceeding to purge..."
+                  az keyvault purge --subscription a6f24a81-7804-44a9-b074-25a9781afd24 -n iaac-webapp-vault
+                  echo "Key Vault purged."
+                else
+                  echo "Key Vault not found, skipping delete and purge."
+                fi
