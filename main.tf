@@ -174,19 +174,19 @@ resource "azurerm_monitor_diagnostic_setting" "webapp_diag_setting" {
   }
 }
 
-resource "azurerm_monitor_diagnostic_setting" "iaacvault" {
-  name                        = "iaac-webapp-vault-logs"
-  target_resource_id          = azurerm_key_vault.iaacvault.id
-  log_analytics_workspace_id  = azurerm_log_analytics_workspace.iaac_webapp_logs.id
-
-  enabled_log {
-    category  = "AuditEvent"
-  }
-  metric {
-    category = "AllMetrics"
-    enabled = true
-  }
-}
+#resource "azurerm_monitor_diagnostic_setting" "iaacvault" {
+# name                        = "iaac-webapp-vault-logs"
+# target_resource_id          = azurerm_key_vault.iaacvault.id
+# log_analytics_workspace_id  = azurerm_log_analytics_workspace.iaac_webapp_logs.id
+#
+# enabled_log {
+#   category  = "AuditEvent"
+# }
+# metric {
+#   category = "AllMetrics"
+#   enabled = true
+# }
+#}
 
 resource "azurerm_linux_web_app_slot" "qa" {
   name            = "qa"
