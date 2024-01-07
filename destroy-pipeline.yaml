@@ -18,6 +18,7 @@ variables:
   sa_name: 'iaaclabs'
   cont_name: 'iaacazuretfwebapp'
   storage_key: 'terraform.tfstate'
+  service_acct: 'iaac-service'
 
 stages:
   - stage: cleanUplabs
