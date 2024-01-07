@@ -51,14 +51,14 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                EXISTS=$(az keyvault list --subscription a6f24a81-7804-44a9-b074-25a9781afd24 --query "[?name=='iaac-webapp-vault'].name" -o tsv)
-                if [ "$EXISTS" == "iaac-webapp-vault" ]; then
-                  az keyvault purge --subscription a6f24a81-7804-44a9-b074-25a9781afd24 -n iaac-webapp-vault
+                EXISTS=$(az keyvault list-deleted --subscription a6f24a81-7804-44a9-b074-25a9781afd24 --query "[?name=='iaac-webapp-vault'].properties.vaultId" -o tsv)
+                if [ -n "$EXISTS" ]; then
+                  echo "Key Vault in soft-deleted state found. Proceeding to purge..."
+                  az keyvault purge --name iaac-webapp-vault --subscription a6f24a81-7804-44a9-b074-25a9781afd24
                   echo "Key Vault purged."
                 else
-                  echo "Key Vault not found, skipping purge."
+                  echo "Key Vault not found in soft-deleted state, skipping purge."
                 fi
-  
   - stage: validate
     jobs:
       - job: validate

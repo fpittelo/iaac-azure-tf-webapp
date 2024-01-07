@@ -96,13 +96,23 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
+                # Check for existing Key Vault and delete if exists
                 EXISTS=$(az keyvault list --subscription a6f24a81-7804-44a9-b074-25a9781afd24 --query "[?name=='iaac-webapp-vault'].name" -o tsv)
-                if [ "$EXISTS" == "iaac-webapp-vault" ]; then
-                  echo "Attempting to delete Key Vault..."
-                  az keyvault delete --name iaac-webapp-vault --subscription a6f24a81-7804-44a9-b074-25a9781afd24 --no-wait
-                  echo "Key Vault deletion initiated. Proceeding to purge..."
-                  az keyvault purge --subscription a6f24a81-7804-44a9-b074-25a9781afd24 -n iaac-webapp-vault
+                if [ -n "$EXISTS" ]; then
+                  echo "Existing Key Vault found. Deleting..."
+                  az keyvault delete --name iaac-webapp-vault --subscription a6f24a81-7804-44a9-b074-25a9781afd24
+                  echo "Key Vault deletion initiated."
+                else
+                  echo "No existing Key Vault named iaac-webapp-vault found."
+                fi
+
+                sleep 30
+
+                DELETED_EXISTS=$(az keyvault list-deleted --subscription a6f24a81-7804-44a9-b074-25a9781afd24 --query "[?name=='iaac-webapp-vault'].name" -o tsv)
+                if [ -n "$DELETED_EXISTS" ]; then
+                  echo "Soft-deleted Key Vault found. Purging..."
+                  az keyvault purge --name iaac-webapp-vault --subscription a6f24a81-7804-44a9-b074-25a9781afd24
                   echo "Key Vault purged."
                 else
-                  echo "Key Vault not found, skipping delete and purge."
+                  echo "No soft-deleted Key Vault named iaac-webapp-vault found."
                 fi
