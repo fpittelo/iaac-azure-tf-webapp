@@ -20,7 +20,7 @@ variables:
   storage_key: 'terraform.tfstate'
 
 stages:
-  - stage: cleanUp labs
+  - stage: cleanUplabs
     displayName: Clean Key vault
     jobs:
       - job: cleanUpKeyVault
