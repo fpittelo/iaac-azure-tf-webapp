@@ -51,6 +51,37 @@ stages:
               provider: 'azurerm'
               command: 'destroy'
               environmentServiceNameAzureRM: 'iaac-service'
+  - stage: redestroy
+    condition: failed ('destroy')
+    jobs:
+      - job: redestroy
+        steps:
+          - task: TerraformInstaller@0
+            displayName: install
+            inputs:
+              terraformVersion: 'latest'
+          - task: TerraformTaskV3@3
+            displayName: init
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'iaac-service'
+              backendAzureRmResourceGroupName: 'LABS'
+              backendAzureRmStorageAccountName: 'iaaclabs'
+              backendAzureRmContainerName: 'iaacazuretfwebapp'
+              backendAzureRmKey: 'terraform.tfstate'
+          - task: TerraformTaskV3@3
+            displayName: plan
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: 'iaac-service'
+          - task: TerraformTaskV3@3
+            displayName: destroy
+            inputs:
+              provider: 'azurerm'
+              command: 'destroy'
+              environmentServiceNameAzureRM: 'iaac-service'
   - stage: cleanUplabs
     condition: always()
     displayName: Clean Key vault
