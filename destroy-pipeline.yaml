@@ -18,6 +18,7 @@ variables:
   sa_name: 'iaaclabs'
   cont_name: 'iaacazuretfwebapp'
   storage_key: 'terraform.tfstate'
+  service_acct: 'iaac-service'
 
 stages:
   - stage: destroy
@@ -50,3 +51,68 @@ stages:
               provider: 'azurerm'
               command: 'destroy'
               environmentServiceNameAzureRM: 'iaac-service'
+  - stage: redestroy
+    condition: failed ('destroy')
+    jobs:
+      - job: redestroy
+        steps:
+          - task: TerraformInstaller@0
+            displayName: install
+            inputs:
+              terraformVersion: 'latest'
+          - task: TerraformTaskV3@3
+            displayName: init
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'iaac-service'
+              backendAzureRmResourceGroupName: 'LABS'
+              backendAzureRmStorageAccountName: 'iaaclabs'
+              backendAzureRmContainerName: 'iaacazuretfwebapp'
+              backendAzureRmKey: 'terraform.tfstate'
+          - task: TerraformTaskV3@3
+            displayName: plan
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: 'iaac-service'
+          - task: TerraformTaskV3@3
+            displayName: destroy
+            inputs:
+              provider: 'azurerm'
+              command: 'destroy'
+              environmentServiceNameAzureRM: 'iaac-service'
+  - stage: cleanUplabs
+    condition: always()
+    displayName: Clean Key vault
+    jobs:
+      - job: cleanUpKeyVault
+        displayName: Clean Up Key Vault
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Purge Azure Key Vault'
+            inputs:
+              azureSubscription: $(service_acct)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                # Check for existing Key Vault and delete if exists
+                EXISTS=$(az keyvault list --subscription a6f24a81-7804-44a9-b074-25a9781afd24 --query "[?name=='iaac-webapp-vault'].name" -o tsv)
+                if [ -n "$EXISTS" ]; then
+                  echo "Existing Key Vault found. Deleting..."
+                  az keyvault delete --name iaac-webapp-vault --subscription a6f24a81-7804-44a9-b074-25a9781afd24
+                  echo "Key Vault deletion initiated."
+                else
+                  echo "No existing Key Vault named iaac-webapp-vault found."
+                fi
+
+                sleep 30
+
+                DELETED_EXISTS=$(az keyvault list-deleted --subscription a6f24a81-7804-44a9-b074-25a9781afd24 --query "[?name=='iaac-webapp-vault'].name" -o tsv)
+                if [ -n "$DELETED_EXISTS" ]; then
+                  echo "Soft-deleted Key Vault found. Purging..."
+                  az keyvault purge --name iaac-webapp-vault --subscription a6f24a81-7804-44a9-b074-25a9781afd24
+                  echo "Key Vault purged."
+                else
+                  echo "No soft-deleted Key Vault named iaac-webapp-vault found."
+                fi
