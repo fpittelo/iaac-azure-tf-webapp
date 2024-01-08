@@ -7,6 +7,7 @@ trigger:
     exclude: # You can exclude paths that don't require a build.
     - README.md 
     - .gitignore
+    - '**/*.yaml'
 
 pr:
   autoCancel: true # Cancels running jobs if a new update to the same PR is pushed.
@@ -19,11 +20,14 @@ pr:
 
 pool:
   vmImage: ubuntu-latest
+
 variables:
   rg_group: LABS
   sa_name: iaaclabs
   cont_name: iaacazuretfwebapp
   storage_key: terraform.tfstate
+  service_acct: iaac-service
+
 resources:
   repositories:
     - repository: website
@@ -31,7 +35,30 @@ resources:
       name: fpittelo/website
       endpoint: iaac-github
       ref: refs/heads/dev
+
 stages:
+  
+  - stage: cleanUp
+    displayName: Clean Up labs
+    jobs:
+      - job: cleanUpKeyVault
+        displayName: Clean Up Key Vault
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Purge Azure Key Vault'
+            inputs:
+              azureSubscription: $(service_acct)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                EXISTS=$(az keyvault list-deleted --subscription a6f24a81-7804-44a9-b074-25a9781afd24 --query "[?name=='iaac-webapp-vault'].properties.vaultId" -o tsv)
+                if [ -n "$EXISTS" ]; then
+                  echo "Key Vault in soft-deleted state found. Proceeding to purge..."
+                  az keyvault purge --name iaac-webapp-vault --subscription a6f24a81-7804-44a9-b074-25a9781afd24
+                  echo "Key Vault purged."
+                else
+                  echo "Key Vault not found in soft-deleted state, skipping purge."
+                fi
   - stage: validate
     jobs:
       - job: validate
